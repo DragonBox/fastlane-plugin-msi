@@ -7,6 +7,8 @@ module Fastlane
       def self.run(params)
         UI.user_error! 'Could not find wixl. Please make sure to install msitools before running msi' if `which wixl`.empty?
 
+        wxs_root = File.dirname(params[:wxs_path])
+
         fragments = params[:fragments]
         fragment_files = unless fragments.nil? or fragments.empty?
           fragments.map do |fragment, options|
@@ -15,7 +17,7 @@ module Fastlane
             UI.user_error! "No path specified for fragment #{fragment}" if fragment_path.nil? or fragment_path.empty?
             UI.user_error! "Nothing found at #{fragment_path}" if Dir.glob(fragment_path).empty?
 
-            fragment_file = "#{fragment}.wxs"
+            fragment_file = File.join(wxs_root, "#{fragment}.wxs")
 
             command_builder = ["find #{fragment_path} | wixl-heat"]
             command_builder << "--prefix #{options[:prefix]}" if options[:prefix]
@@ -33,14 +35,23 @@ module Fastlane
           end
         end
 
+        output_file = if params[:output] and !params[:output].empty?
+          params[:output]
+        else
+          params[:wxs_path].gsub(/\.wxs/, '.msi')
+        end
+
         command_builder = ["wixl #{params[:wxs_path]}"]
         command_builder << fragment_files.join(' ') if fragment_files
         command_builder << params[:defines].map { |k,v| "-D #{k}=#{v}" }.join(' ') if params[:defines]
-        command_builder << "--output #{params[:output]}" if params[:output]
+        command_builder << "--output #{output_file}"
         command_builder << "--arch #{params[:architecture]}" if params[:architecture]
         command_builder << '-v'
 
         sh(command_builder.join(' '))
+        UI.success "Successfully generated .msi at #{output_file}"
+
+        output_file
       end
 
       def self.description

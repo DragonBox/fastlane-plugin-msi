@@ -1,5 +1,5 @@
 lane :test do
-  msi(
+  msi_file = msi(
     wxs_path: 'data/SampleApp.wxs',
     fragments: {
       ApplicationData: {
