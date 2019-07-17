@@ -33,11 +33,6 @@ module Fastlane
           end
         end
 
-        UI.message fragment_files.inspect
-        UI.message Dir.pwd
-        UI.message `find *`
-        UI.message File.exist? params[:wxs_path]
-
         command_builder = ["wixl #{params[:wxs_path]}"]
         command_builder << fragment_files.join(' ') if fragment_files
         command_builder << params[:defines].map { |k,v| "-D #{k}=#{v}" }.join(' ') if params[:defines]

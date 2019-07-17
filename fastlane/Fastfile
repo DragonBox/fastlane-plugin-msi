@@ -1,3 +1,16 @@
 lane :test do
-  msi
+  msi(
+    wxs_path: 'data/SampleApp.wxs',
+    fragments: {
+      ApplicationData: {
+        path: 'data/SampleApp/SampleApp_Data/*',
+        prefix: 'data/SampleApp/',
+        directory_ref: 'INSTALLDIR',
+        var: 'var.SourceDir',
+        component_group: 'Application.Data'
+      }
+    },
+    defines: {
+      'SourceDir' => 'data/SampleApp'
+    })
 end
