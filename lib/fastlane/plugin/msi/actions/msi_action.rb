@@ -19,10 +19,10 @@ module Fastlane
 
             fragment_file = File.join(wxs_root, "#{fragment}.wxs")
 
-            command_builder = ["find #{fragment_path} | wixl-heat"]
+            command_builder = ["find \"#{fragment_path}\" | wixl-heat"]
             command_builder << "--prefix #{options[:prefix]}" if options[:prefix]
-            command_builder << "--directory-ref #{options[:directory_ref]}" if options[:directory_ref]
             command_builder << "--exclude #{options[:exclude]}" if options[:exclude]
+            command_builder << "--directory-ref #{options[:directory_ref]}" if options[:directory_ref]
             command_builder << "--var #{options[:var]}" if options[:var]
             command_builder << "--component-group #{options[:component_group]}" if options[:component_group]
             command_builder << '--win64' if options[:win64]
