@@ -12,12 +12,17 @@ module Fastlane
         fragments = params[:fragments]
         fragment_files = unless fragments.nil? or fragments.empty?
           fragments.map do |fragment, options|
+            fragment_file = File.join(wxs_root, "#{fragment}.wxs")
+
+            unless options[:regenerate]
+              UI.message "Skipping fragment generation for #{fragment}. Expecting #{fragment_file} to exist."
+              next fragment_file
+            end
+
             UI.message "Generating fragment for #{fragment}"
             fragment_path = options[:path]
             UI.user_error! "No path specified for fragment #{fragment}" if fragment_path.nil? or fragment_path.empty?
             UI.user_error! "Nothing found at #{fragment_path}" if Dir.glob(fragment_path).empty?
-
-            fragment_file = File.join(wxs_root, "#{fragment}.wxs")
 
             command_builder = ["find \"#{fragment_path}\" | wixl-heat"]
             command_builder << "--prefix #{options[:prefix]}" if options[:prefix]
