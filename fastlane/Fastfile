@@ -1,5 +1,5 @@
 lane :test do
-  msi_file = msi(
+  msi(
     wxs_path: 'data/SampleApp.wxs',
     fragments: {
       ApplicationData: {
@@ -12,5 +12,6 @@ lane :test do
     },
     defines: {
       'SourceDir' => 'data/SampleApp'
-    })
+    }
+  )
 end
